@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Equipment Assignment Portal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>IT Equipment Inventory System</h1>
+
+    <p>
+        Manage equipment inventory, assignments, returns,
+        signatures, and equipment records.
+    </p>
+
+    <!-- Navigation Buttons -->
+    <button id="dashboardBtn">Dashboard</button>
+    <button id="inventoryBtn">Inventory</button>
+    <button id="assignBtn">Assign Equipment</button>
+    <button id="returnBtn">Return Equipment</button>
+    <button id="searchBtn">Search Records</button>
+    <button id="signatureBtn">Equipment Signature</button>
+
+
+    <!-- ====================================== -->
+<!-- DASHBOARD -->
+<!-- ====================================== -->
+
+<div id="dashboardSection">
+
+    <div class="dashboard-top">
+
+        <div>
+            <p class="dashboard-label">MIS EQUIPMENT MANAGEMENT</p>
+
+            <h2>Equipment Dashboard</h2>
+
+            <p class="dashboard-description">
+                Monitor inventory, device assignments, returns,
+                repairs, and equipment lifecycle.
+            </p>
+        </div>
+
+        <div class="dashboard-date">
+            Equipment Overview
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">💻</div>
+
+            <div>
+                <p class="stat-title">Total Equipment</p>
+                <h3 id="totalCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">📦</div>
+
+            <div>
+                <p class="stat-title">Ordered</p>
+                <h3 id="orderedCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+
+            <div>
+                <p class="stat-title">Available</p>
+                <h3 id="availableCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">👤</div>
+
+            <div>
+                <p class="stat-title">Assigned</p>
+                <h3 id="assignedCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">↩</div>
+
+            <div>
+                <p class="stat-title">Returned</p>
+                <h3 id="returnedCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">🔧</div>
+
+            <div>
+                <p class="stat-title">Repair</p>
+                <h3 id="repairCount">0</h3>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-icon">🗑</div>
+
+            <div>
+                <p class="stat-title">Disposed</p>
+                <h3 id="disposedCount">0</h3>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-bottom">
+
+        <div class="dashboard-panel">
+
+            <h3>Equipment Lifecycle</h3>
+
+            <p>
+                Ordered → Available → Assigned → Returned →
+                Repair / End of Life → Disposed
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-panel">
+
+            <h3>Quick Actions</h3>
+
+            <p>
+                Use the navigation above to assign equipment,
+                process returns, search records, or review signatures.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- ====================================== -->
+    <!-- INVENTORY -->
+    <!-- ====================================== -->
+
+    <div id="inventorySection" style="display: none;">
+
+        <h2>Equipment Inventory</h2>
+
+        <div id="inventoryResults">
+
+            <p>No equipment has been added yet.</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- ASSIGN EQUIPMENT -->
+    <!-- ====================================== -->
+
+    <div id="assignForm" style="display: none;">
+
+        <h2>Assign Equipment</h2>
+
+        <label for="employeeName">
+            Employee Name:
+        </label>
+
+        <input
+            type="text"
+            id="employeeName"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="managerName">
+            Employee Manager:
+        </label>
+
+        <input
+            type="text"
+            id="managerName"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="equipmentType">
+            Equipment Type:
+        </label>
+
+        <select id="equipmentType" required>
+
+            <option value="">
+                Select Equipment Type
+            </option>
+
+            <option value="Laptop">
+                Laptop
+            </option>
+
+            <option value="Desktop">
+                Desktop
+            </option>
+
+            <option value="Monitor">
+                Monitor
+            </option>
+
+            <option value="iPhone">
+                iPhone
+            </option>
+
+            <option value="iPad">
+                iPad
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+
+        <br><br>
+
+
+        <label for="assetTag">
+            Asset Tag:
+        </label>
+
+        <input
+            type="text"
+            id="assetTag"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="serialNumber">
+            Serial Number:
+        </label>
+
+        <input
+            type="text"
+            id="serialNumber"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="model">
+            Model:
+        </label>
+
+        <input
+            type="text"
+            id="model"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="assignedDate">
+            Date Assigned:
+        </label>
+
+        <input
+            type="date"
+            id="assignedDate"
+            required
+        >
+
+        <br><br>
+
+
+        <label for="preparedBy">
+            Prepared By - IT:
+        </label>
+
+        <input
+            type="text"
+            id="preparedBy"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="approvedBy">
+            Approved By - IT Manager:
+        </label>
+
+        <input
+            type="text"
+            id="approvedBy"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <button
+            id="submitAssignBtn"
+            type="button"
+        >
+            Submit Assignment
+        </button>
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- RETURN EQUIPMENT -->
+    <!-- ====================================== -->
+
+    <div id="returnForm" style="display: none;">
+
+        <h2>Return Equipment</h2>
+
+        <label for="returnEmployeeName">
+            Employee Name:
+        </label>
+
+        <input
+            type="text"
+            id="returnEmployeeName"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <label for="returnAssetTag">
+            Asset Tag:
+        </label>
+
+        <input
+            type="text"
+            id="returnAssetTag"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <p>
+            Equipment details will appear here.
+        </p>
+
+
+        <label for="returnDate">
+            Return Date:
+        </label>
+
+        <input
+            type="date"
+            id="returnDate"
+            required
+        >
+
+        <br><br>
+
+
+        <label for="employeeSignature">
+            Employee Signature:
+        </label>
+
+        <input
+            type="text"
+            id="employeeSignature"
+            required
+            minlength="2"
+        >
+
+        <br><br>
+
+
+        <button
+            id="confirmReturnBtn"
+            type="button"
+        >
+            Confirm Return
+        </button>
+
+    </div>
+
+
+    <!-- ====================================== -->
+    <!-- SEARCH -->
+    <!-- ====================================== -->
+
+    <div id="searchSection" style="display: none;">
+
+        <h2>Search Equipment Records</h2>
+
+        <label for="searchInput">
+            Search by Employee, Asset Tag, or Serial Number:
+        </label>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Enter employee name, asset tag, or serial number"
+        >
+
+        <button
+            id="findRecordBtn"
+            type="button"
+        >
+            Search
+        </button>
+
+
+        <div id="searchResults"></div>
+
+    </div>
+
+
+    <!-- ====================================== -->
+<!-- EQUIPMENT SIGNATURE -->
+<!-- ====================================== -->
+
+<div id="signatureSection" style="display: none;">
+
+    <div class="signature-card">
+
+        <div class="signature-header">
+            <div>
+                <p class="signature-label">MIS EQUIPMENT MANAGEMENT</p>
+                <h2>Equipment Assignment Agreement</h2>
+                <p class="signature-subtitle">
+                    Review the assigned equipment below and sign to confirm receipt.
+                </p>
+            </div>
+
+            <div class="signature-status">
+                Pending Signature
+            </div>
+        </div>
+
+
+        <div class="signature-info-grid">
+
+            <div class="signature-info-box">
+                <span>Employee</span>
+                <strong>Alicia Brown</strong>
+            </div>
+
+            <div class="signature-info-box">
+                <span>Assignment ID</span>
+                <strong>1003</strong>
+            </div>
+
+            <div class="signature-info-box">
+                <span>Asset Tag</span>
+                <strong>1199-1001</strong>
+            </div>
+
+            <div class="signature-info-box">
+                <span>Equipment</span>
+                <strong>Dell Latitude 5440</strong>
+            </div>
+
+        </div>
+
+
+        <div class="agreement-box">
+
+            <h3>Employee Acknowledgment</h3>
+
+            <p>
+                I confirm that I received the equipment listed above.
+                I understand that this equipment remains the property
+                of the organization and that I am responsible for its
+                proper use and return when requested.
+            </p>
+
+        </div>
+
+
+        <div class="signature-entry">
+
+            <label for="signatureName">
+                Employee Signature
+            </label>
+
+            <input
+                type="text"
+                id="signatureName"
+                placeholder="Type your full name"
+            >
+
+            <p class="signature-help">
+                Typing your full name confirms your electronic signature.
+            </p>
+
+            <button
+                id="signBtn"
+                type="button"
+                class="signature-submit-btn"
+            >
+                Sign Equipment Agreement
+            </button>
+
+            <p id="signatureMessage"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>
