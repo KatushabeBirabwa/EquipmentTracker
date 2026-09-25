@@ -11,13 +11,15 @@ builder.Services.AddDbContext<EquipmentTrackerContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://127.0.0.1:5500")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins(
+            "http://127.0.0.1:5500",
+            "http://localhost:5500"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddControllers();
@@ -30,9 +32,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
+// This Ensures CORS runs before redirection
 app.UseCors("AllowFrontend");
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

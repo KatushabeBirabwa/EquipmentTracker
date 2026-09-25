@@ -1,551 +1,454 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Equipment Assignment Portal</title>
+    <title>User Device Assignment System & AI Workflow Studio</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- ========================================================== -->
+    <!-- MERMAID.JS CDN (Renders AI Workflow Flowcharts) -->
+    <!-- Runs directly in the browser; no npm or node build needed -->
+    <!-- ========================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid in manual mode so the script controls when diagrams draw
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+    </script>
 </head>
 
 <body>
 
-    <h1>IT Equipment Inventory System</h1>
-
+    <!-- ================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ================================================== -->
+    <h1>User Device Assignment & Management System</h1>
     <p>
-        Manage equipment inventory, assignments, returns,
-        signatures, and equipment records.
+        Manage device requests, assignments, digital acknowledgments,
+        returns, diagnostic service triage, and AI workflow blueprints.
     </p>
 
-    <!-- Navigation Buttons -->
-    <button id="dashboardBtn">Dashboard</button>
-    <button id="inventoryBtn">Inventory</button>
-    <button id="assignBtn">Assign Equipment</button>
-    <button id="returnBtn">Return Equipment</button>
-    <button id="searchBtn">Search Records</button>
-    <button id="signatureBtn">Equipment Signature</button>
+    <!-- ================================================== -->
+    <!-- NAVIGATION BAR -->
+    <!-- ================================================== -->
+    <nav>
+        <button id="dashboardBtn">Dashboard</button>
+        <button id="requestBtn">Device Request</button>
+        <button id="assignBtn">Assign Equipment</button>
+        <button id="signatureBtn">Equipment Signature</button>
+        <button id="returnBtn">Return Equipment</button>
+        <button id="searchBtn">Search Records</button>
+        <button id="inventoryBtn">Device Inventory</button>
 
+        <!-- NEW BUTTONS -->
+        <button id="serviceBtn" style="background-color: #0369a1; color: white;">Device Service & Triage</button>
+        <button id="aiWorkflowBtn" style="background-color: #4338ca; color: white;">AI Workflow Studio</button>
+    </nav>
 
-    <!-- ====================================== -->
-<!-- DASHBOARD -->
-<!-- ====================================== -->
-
-<div id="dashboardSection">
-
-    <div class="dashboard-top">
-
-        <div>
-            <p class="dashboard-label">MIS EQUIPMENT MANAGEMENT</p>
-
-            <h2>Equipment Dashboard</h2>
-
-            <p class="dashboard-description">
-                Monitor inventory, device assignments, returns,
-                repairs, and equipment lifecycle.
-            </p>
+    <!-- ================================================== -->
+    <!-- DASHBOARD -->
+    <!-- ================================================== -->
+    <div id="dashboardSection">
+        <div class="dashboard-top">
+            <div>
+                <p class="dashboard-label">MIS DEVICE MANAGEMENT</p>
+                <h2>Equipment Status Dashboard</h2>
+                <p class="dashboard-description">
+                    Monitor available devices, assignments, returns,
+                    service status, and equipment lifecycle.
+                </p>
+            </div>
+            <div class="dashboard-date">Device Overview</div>
         </div>
 
-        <div class="dashboard-date">
-            Equipment Overview
+        <div class="dashboard-grid">
+            <!-- Total Devices -->
+            <div class="stat-card">
+                <div class="stat-icon">💻</div>
+                <div>
+                    <p class="stat-title">Total Devices</p>
+                    <h3 id="totalCount">0</h3>
+                </div>
+            </div>
+
+            <!-- Available -->
+            <div class="stat-card" id="availableCard" style="cursor: pointer;">
+                <div class="stat-icon">✓</div>
+                <div>
+                    <p class="stat-title">Available</p>
+                    <h3 id="availableCount">0</h3>
+                </div>
+            </div>
+
+            <!-- Assigned -->
+            <div class="stat-card" id="assignedCard" style="cursor: pointer;">
+                <div class="stat-icon">👤</div>
+                <div>
+                    <p class="stat-title">Assigned</p>
+                    <h3 id="assignedCount">0</h3>
+                </div>
+            </div>
+
+            <!-- Returned -->
+            <div class="stat-card" id="returnedCard" style="cursor: pointer;">
+                <div class="stat-icon">↩</div>
+                <div>
+                    <p class="stat-title">Returned</p>
+                    <h3 id="returnedCount">0</h3>
+                </div>
+            </div>
+
+            <!-- Service -->
+            <div class="stat-card" id="serviceCard" style="cursor: pointer;">
+                <div class="stat-icon">🔧</div>
+                <div>
+                    <p class="stat-title">Service</p>
+                    <h3 id="serviceCount">0</h3>
+                </div>
+            </div>
+
+            <!-- Disposed -->
+            <div class="stat-card" id="disposedCard" style="cursor: pointer;">
+                <div class="stat-icon">🗑</div>
+                <div>
+                    <p class="stat-title">Disposed</p>
+                    <h3 id="disposedCount">0</h3>
+                </div>
+            </div>
         </div>
 
+        <div class="dashboard-bottom">
+            <div class="dashboard-panel">
+                <h3>Assignment Workflow</h3>
+                <p>Request → Available Device → Assignment → Digital Signature → In Use → Return</p>
+            </div>
+
+            <div class="dashboard-panel">
+                <h3>IT Quick Actions</h3>
+                <p>Review requests, assign equipment, process returns, search records, and review digital signatures.</p>
+            </div>
+        </div>
+
+        <!-- Dashboard status details table -->
+        <div id="dashboardStatusResults" style="display: none; margin-top: 20px;">
+            <h3 id="dashboardStatusTitle">Device Details</h3>
+            <div id="dashboardStatusTable"></div>
+        </div>
     </div>
 
+    <!-- ================================================== -->
+    <!-- DEVICE REQUEST -->
+    <!-- ================================================== -->
+    <div id="requestSection" style="display: none;">
+        <h2>Device Request</h2>
 
-    <div class="dashboard-grid">
+        <label for="requestEmployeeName">Employee Name:</label>
+        <input type="text" id="requestEmployeeName" required><br><br>
 
-        <div class="stat-card">
-            <div class="stat-icon">💻</div>
+        <label for="requestManagerName">Employee Manager:</label>
+        <input type="text" id="requestManagerName" required><br><br>
 
-            <div>
-                <p class="stat-title">Total Equipment</p>
-                <h3 id="totalCount">0</h3>
-            </div>
-        </div>
+        <label for="requestedEquipmentType">Equipment Type:</label>
+        <select id="requestedEquipmentType" required>
+            <option value="">Select Equipment Type</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Monitor">Monitor</option>
+            <option value="iPhone">iPhone</option>
+            <option value="iPad">iPad</option>
+            <option value="Other">Other</option>
+        </select><br><br>
 
+        <label for="requestType">Request Type:</label>
+        <select id="requestType">
+            <option value="">Select Request Type</option>
+            <option value="New Hire">New Hire</option>
+            <option value="Replacement">Replacement Device</option>
+        </select><br><br>
 
-        <div class="stat-card">
-            <div class="stat-icon">📦</div>
+        <label for="requestReason">Request Reason:</label>
+        <select id="requestReason">
+            <option value="">Select Reason</option>
+            <option value="New Hire">New Hire</option>
+            <option value="End of Life">End of Life</option>
+            <option value="Damaged">Damaged Device</option>
+            <option value="Broken">Broken Device</option>
+            <option value="Performance">Performance Issue</option>
+            <option value="Other">Other</option>
+        </select><br><br>
 
-            <div>
-                <p class="stat-title">Ordered</p>
-                <h3 id="orderedCount">0</h3>
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-icon">✓</div>
-
-            <div>
-                <p class="stat-title">Available</p>
-                <h3 id="availableCount">0</h3>
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-icon">👤</div>
-
-            <div>
-                <p class="stat-title">Assigned</p>
-                <h3 id="assignedCount">0</h3>
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-icon">↩</div>
-
-            <div>
-                <p class="stat-title">Returned</p>
-                <h3 id="returnedCount">0</h3>
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-icon">🔧</div>
-
-            <div>
-                <p class="stat-title">Repair</p>
-                <h3 id="repairCount">0</h3>
-            </div>
-        </div>
-
-
-        <div class="stat-card">
-            <div class="stat-icon">🗑</div>
-
-            <div>
-                <p class="stat-title">Disposed</p>
-                <h3 id="disposedCount">0</h3>
-            </div>
-        </div>
-
+        <button id="continueRequestBtn" type="button">Continue to Assignment</button>
+        <p id="requestMessage"></p>
     </div>
 
-
-    <div class="dashboard-bottom">
-
-        <div class="dashboard-panel">
-
-            <h3>Equipment Lifecycle</h3>
-
-            <p>
-                Ordered → Available → Assigned → Returned →
-                Repair / End of Life → Disposed
-            </p>
-
-        </div>
-
-
-        <div class="dashboard-panel">
-
-            <h3>Quick Actions</h3>
-
-            <p>
-                Use the navigation above to assign equipment,
-                process returns, search records, or review signatures.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-    <!-- ====================================== -->
-    <!-- INVENTORY -->
-    <!-- ====================================== -->
-
-    <div id="inventorySection" style="display: none;">
-
-        <h2>Equipment Inventory</h2>
-
-        <div id="inventoryResults">
-
-            <p>No equipment has been added yet.</p>
-
-        </div>
-
-    </div>
-
-
-    <!-- ====================================== -->
+    <!-- ================================================== -->
     <!-- ASSIGN EQUIPMENT -->
-    <!-- ====================================== -->
-
+    <!-- ================================================== -->
     <div id="assignForm" style="display: none;">
-
         <h2>Assign Equipment</h2>
 
-        <label for="employeeName">
-            Employee Name:
-        </label>
+        <label for="employeeName">Employee Name:</label>
+        <input type="text" id="employeeName" required><br><br>
 
-        <input
-            type="text"
-            id="employeeName"
-            required
-            minlength="2"
-        >
+        <label for="managerName">Employee Manager:</label>
+        <input type="text" id="managerName" required><br><br>
 
-        <br><br>
-
-
-        <label for="managerName">
-            Employee Manager:
-        </label>
-
-        <input
-            type="text"
-            id="managerName"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="equipmentType">
-            Equipment Type:
-        </label>
-
+        <label for="equipmentType">Equipment Type:</label>
         <select id="equipmentType" required>
+            <option value="">Select Equipment Type</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Monitor">Monitor</option>
+            <option value="iPhone">iPhone</option>
+            <option value="iPad">iPad</option>
+            <option value="Other">Other</option>
+        </select><br><br>
 
-            <option value="">
-                Select Equipment Type
-            </option>
+        <button id="findAvailableDeviceBtn" type="button">Find Available Device</button>
+        <div id="availableDeviceResults"></div><br>
 
-            <option value="Laptop">
-                Laptop
-            </option>
+        <label for="assetTag">Asset Tag:</label>
+        <input type="text" id="assetTag" required><br><br>
 
-            <option value="Desktop">
-                Desktop
-            </option>
+        <label for="serialNumber">Serial Number:</label>
+        <input type="text" id="serialNumber" required><br><br>
 
-            <option value="Monitor">
-                Monitor
-            </option>
+        <label for="manufacturer">Manufacturer:</label>
+        <input type="text" id="manufacturer"><br><br>
 
-            <option value="iPhone">
-                iPhone
-            </option>
+        <label for="model">Model:</label>
+        <input type="text" id="model" required><br><br>
 
-            <option value="iPad">
-                iPad
-            </option>
+        <label for="assignedDate">Date Assigned:</label>
+        <input type="date" id="assignedDate" required><br><br>
 
-            <option value="Other">
-                Other
-            </option>
+        <label for="preparedBy">Prepared By - IT:</label>
+        <input type="text" id="preparedBy" required><br><br>
 
-        </select>
+        <label for="approvedBy">Approved By:</label>
+        <input type="text" id="approvedBy"><br><br>
 
-        <br><br>
-
-
-        <label for="assetTag">
-            Asset Tag:
-        </label>
-
-        <input
-            type="text"
-            id="assetTag"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="serialNumber">
-            Serial Number:
-        </label>
-
-        <input
-            type="text"
-            id="serialNumber"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="model">
-            Model:
-        </label>
-
-        <input
-            type="text"
-            id="model"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="assignedDate">
-            Date Assigned:
-        </label>
-
-        <input
-            type="date"
-            id="assignedDate"
-            required
-        >
-
-        <br><br>
-
-
-        <label for="preparedBy">
-            Prepared By - IT:
-        </label>
-
-        <input
-            type="text"
-            id="preparedBy"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="approvedBy">
-            Approved By - IT Manager:
-        </label>
-
-        <input
-            type="text"
-            id="approvedBy"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <button
-            id="submitAssignBtn"
-            type="button"
-        >
-            Submit Assignment
-        </button>
-
+        <button id="submitAssignBtn" type="button">Prepare Assignment Agreement</button>
+        <p id="assignmentMessage"></p>
     </div>
 
+    <!-- ================================================== -->
+    <!-- EQUIPMENT SIGNATURE -->
+    <!-- ================================================== -->
+    <div id="signatureSection" style="display: none;">
+        <div class="signature-card">
+            <div class="signature-header">
+                <div>
+                    <p class="signature-label">MIS DEVICE ASSIGNMENT</p>
+                    <h2>Equipment Assignment Agreement</h2>
+                    <p class="signature-subtitle">
+                        Review the assigned equipment below and sign to confirm receipt.
+                    </p>
+                </div>
+                <div class="signature-status" id="signatureStatus">Pending Signature</div>
+            </div>
 
-    <!-- ====================================== -->
-    <!-- RETURN EQUIPMENT -->
-    <!-- ====================================== -->
+            <div class="signature-info-grid">
+                <div class="signature-info-box">
+                    <span>Employee</span>
+                    <strong id="signatureEmployee">Not selected</strong>
+                </div>
+                <div class="signature-info-box">
+                    <span>Assignment ID</span>
+                    <strong id="signatureAssignmentId">Pending</strong>
+                </div>
+                <div class="signature-info-box">
+                    <span>Asset Tag</span>
+                    <strong id="signatureAssetTag">-</strong>
+                </div>
+                <div class="signature-info-box">
+                    <span>Equipment</span>
+                    <strong id="signatureEquipment">-</strong>
+                </div>
+                <div class="signature-info-box">
+                    <span>Serial Number</span>
+                    <strong id="signatureSerialNumber">-</strong>
+                </div>
+                <div class="signature-info-box">
+                    <span>Date Assigned</span>
+                    <strong id="signatureAssignedDate">-</strong>
+                </div>
+            </div>
 
-    <div id="returnForm" style="display: none;">
-
-        <h2>Return Equipment</h2>
-
-        <label for="returnEmployeeName">
-            Employee Name:
-        </label>
-
-        <input
-            type="text"
-            id="returnEmployeeName"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <label for="returnAssetTag">
-            Asset Tag:
-        </label>
-
-        <input
-            type="text"
-            id="returnAssetTag"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <p>
-            Equipment details will appear here.
-        </p>
-
-
-        <label for="returnDate">
-            Return Date:
-        </label>
-
-        <input
-            type="date"
-            id="returnDate"
-            required
-        >
-
-        <br><br>
-
-
-        <label for="employeeSignature">
-            Employee Signature:
-        </label>
-
-        <input
-            type="text"
-            id="employeeSignature"
-            required
-            minlength="2"
-        >
-
-        <br><br>
-
-
-        <button
-            id="confirmReturnBtn"
-            type="button"
-        >
-            Confirm Return
-        </button>
-
-    </div>
-
-
-    <!-- ====================================== -->
-    <!-- SEARCH -->
-    <!-- ====================================== -->
-
-    <div id="searchSection" style="display: none;">
-
-        <h2>Search Equipment Records</h2>
-
-        <label for="searchInput">
-            Search by Employee, Asset Tag, or Serial Number:
-        </label>
-
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Enter employee name, asset tag, or serial number"
-        >
-
-        <button
-            id="findRecordBtn"
-            type="button"
-        >
-            Search
-        </button>
-
-
-        <div id="searchResults"></div>
-
-    </div>
-
-
-    <!-- ====================================== -->
-<!-- EQUIPMENT SIGNATURE -->
-<!-- ====================================== -->
-
-<div id="signatureSection" style="display: none;">
-
-    <div class="signature-card">
-
-        <div class="signature-header">
-            <div>
-                <p class="signature-label">MIS EQUIPMENT MANAGEMENT</p>
-                <h2>Equipment Assignment Agreement</h2>
-                <p class="signature-subtitle">
-                    Review the assigned equipment below and sign to confirm receipt.
+            <div class="agreement-box">
+                <h3>Employee Acknowledgment</h3>
+                <p>
+                    I confirm that I received the equipment listed above.
+                    I understand that this equipment remains the property of the organization
+                    and that I am responsible for its proper use and return when requested.
                 </p>
             </div>
 
-            <div class="signature-status">
-                Pending Signature
+            <div class="signature-entry">
+                <label for="signatureName">Employee Signature:</label>
+                <input type="text" id="signatureName" placeholder="Type your full name">
+                <p class="signature-help">Typing your full name confirms your electronic signature.</p>
+
+                <label for="signatureDate">Signature Date:</label>
+                <input type="date" id="signatureDate"><br><br>
+
+                <button id="signBtn" type="button" class="signature-submit-btn">Sign Equipment Agreement</button>
+                <p id="signatureMessage"></p>
             </div>
         </div>
-
-
-        <div class="signature-info-grid">
-
-            <div class="signature-info-box">
-                <span>Employee</span>
-                <strong>Alicia Brown</strong>
-            </div>
-
-            <div class="signature-info-box">
-                <span>Assignment ID</span>
-                <strong>1003</strong>
-            </div>
-
-            <div class="signature-info-box">
-                <span>Asset Tag</span>
-                <strong>1199-1001</strong>
-            </div>
-
-            <div class="signature-info-box">
-                <span>Equipment</span>
-                <strong>Dell Latitude 5440</strong>
-            </div>
-
-        </div>
-
-
-        <div class="agreement-box">
-
-            <h3>Employee Acknowledgment</h3>
-
-            <p>
-                I confirm that I received the equipment listed above.
-                I understand that this equipment remains the property
-                of the organization and that I am responsible for its
-                proper use and return when requested.
-            </p>
-
-        </div>
-
-
-        <div class="signature-entry">
-
-            <label for="signatureName">
-                Employee Signature
-            </label>
-
-            <input
-                type="text"
-                id="signatureName"
-                placeholder="Type your full name"
-            >
-
-            <p class="signature-help">
-                Typing your full name confirms your electronic signature.
-            </p>
-
-            <button
-                id="signBtn"
-                type="button"
-                class="signature-submit-btn"
-            >
-                Sign Equipment Agreement
-            </button>
-
-            <p id="signatureMessage"></p>
-
-        </div>
-
     </div>
 
-</div>
+    <!-- ================================================== -->
+    <!-- RETURN EQUIPMENT -->
+    <!-- ================================================== -->
+    <div id="returnForm" style="display: none;">
+        <h2>Return Equipment</h2>
 
-    <!-- JavaScript -->
+        <label for="returnEmployeeName">Employee Name:</label>
+        <input type="text" id="returnEmployeeName"><br><br>
+
+        <label for="returnAssetTag">Asset Tag:</label>
+        <input type="text" id="returnAssetTag">
+        <button id="findReturnDeviceBtn" type="button">Find Device</button><br><br>
+
+        <div id="returnDeviceDetails">
+            <p>Equipment details will appear here.</p>
+        </div><br>
+
+        <label for="returnDate">Return Date:</label>
+        <input type="date" id="returnDate"><br><br>
+
+        <label for="employeeSignature">Employee Signature:</label>
+        <input type="text" id="employeeSignature"><br><br>
+
+        <button id="confirmReturnBtn" type="button">Confirm Return</button>
+        <p id="returnMessage"></p>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- SEARCH RECORDS -->
+    <!-- ================================================== -->
+    <div id="searchSection" style="display: none;">
+        <h2>Search Equipment Records</h2>
+        <label for="searchInput">
+            Search by Asset Tag, Serial Number, Model, Type, or Status:
+        </label><br>
+        <input type="text" id="searchInput" placeholder="Enter search value">
+        <button id="findRecordBtn" type="button">Search</button>
+
+        <div id="searchResults" style="margin-top: 15px;"></div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- DEVICE INVENTORY -->
+    <!-- ================================================== -->
+    <div id="inventorySection" style="display: none;">
+        <h2>Device Inventory</h2>
+        <div id="inventoryResults">
+            <p>Loading equipment...</p>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- DEVICE SERVICE & DIAGNOSTIC REPAIR SECTION -->
+    <!-- Handles IT helpdesk triage, hardware issues, and returns to pool -->
+    <!-- ================================================== -->
+    <div id="serviceSection" style="display: none; padding: 20px;">
+        <h2>Device Service & Diagnostic Triage</h2>
+        <p>Report hardware malfunctions, track diagnostic triage progress, and return repaired devices back to inventory.</p>
+
+        <!-- Intake Form -->
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 18px; border-radius: 8px; margin-bottom: 24px;">
+            <h3>Log Device Service Ticket</h3>
+            
+            <label for="serviceDeviceId"><strong>Device ID:</strong></label><br>
+            <input type="number" id="serviceDeviceId" placeholder="e.g. 1" style="padding: 6px; width: 220px;"><br><br>
+
+            <label for="serviceReportedBy"><strong>Reported By:</strong></label><br>
+            <input type="text" id="serviceReportedBy" placeholder="Employee or Technician Name" style="padding: 6px; width: 280px;"><br><br>
+
+            <!-- Diagnostic Issue Dropdown -->
+            <label for="serviceDiagnosticIssue"><strong>Diagnostic Issue Category:</strong></label><br>
+            <select id="serviceDiagnosticIssue" style="padding: 6px; width: 320px;">
+                <option value="Battery Degradation / Won't Charge">🔋 Battery Degradation / Won't Charge</option>
+                <option value="Broken / Cracked Screen">🖥️ Broken / Cracked Screen</option>
+                <option value="OS / Boot Crash / Blue Screen">⚠️ OS / Boot Crash / Blue Screen</option>
+                <option value="Keyboard / Trackpad Failure">⌨️ Keyboard / Trackpad Failure</option>
+                <option value="Liquid / Physical Damage">💧 Liquid / Physical Damage</option>
+                <option value="Network / Wi-Fi Card Glitch">📶 Network / Wi-Fi Card Glitch</option>
+                <option value="Performance / Overheating">🔥 Performance / Overheating</option>
+            </select><br><br>
+
+            <label for="serviceDescription"><strong>Diagnostic Symptoms & Notes:</strong></label><br>
+            <textarea id="serviceDescription" rows="2" style="width: 100%; padding: 6px;" placeholder="Describe hardware behavior, error codes, or physical state..."></textarea><br><br>
+
+            <button id="submitServiceTicketBtn" type="button" style="padding: 8px 16px; background-color: #0369a1; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Submit to IT Triage
+            </button>
+        </div>
+
+        <!-- Active Service Tickets Table -->
+        <h3>Active Service & Diagnostic Tickets</h3>
+        <table border="1" style="width:100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #f1f5f9;">
+                    <th style="padding: 8px;">Ticket ID</th>
+                    <th style="padding: 8px;">Device ID</th>
+                    <th style="padding: 8px;">Reported By</th>
+                    <th style="padding: 8px;">Diagnostic Issue</th>
+                    <th style="padding: 8px;">Status</th>
+                    <th style="padding: 8px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="serviceTicketsBody">
+                <tr><td colspan="6" style="padding: 10px;">Open this tab to load tickets from your database.</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- AI WORKFLOW STUDIO (NEW) -->
+    <!-- Interactive Mermaid flowchart generator for M365 and IT automation -->
+    <!-- ================================================== -->
+    <div id="aiWorkflowSection" style="display: none; padding: 20px;">
+        <h2>AI Workflow Diagram Studio (M365 & IT Automation)</h2>
+        <p>
+            Generate interactive automation blueprints for IT Helpdesk policies,
+            Microsoft Intune provisioning, offboarding recovery, and repair triage.
+        </p>
+
+        <!-- Quick One-Click Presets -->
+        <div style="margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <strong>Quick Presets: </strong>
+            <button type="button" id="presetRepairBtn" style="padding: 6px 12px; cursor: pointer;">Hardware Repair Triage</button>
+            <button type="button" id="presetOffboardBtn" style="padding: 6px 12px; cursor: pointer;">Offboarding Asset Recovery</button>
+            <button type="button" id="presetProvisionBtn" style="padding: 6px 12px; cursor: pointer;">New Hire Laptop Provisioning</button>
+        </div>
+
+        <textarea id="aiWorkflowPrompt" rows="3" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #94a3b8;" placeholder="Describe a workflow, e.g. Triage device repair, select diagnostic issue, and return to available pool..."></textarea><br><br>
+
+        <button id="runAiWorkflowBtn" type="button" style="padding: 10px 20px; background-color: #4338ca; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            Generate Interactive Diagram
+        </button>
+
+        <!-- Container where Mermaid draws the visual flowchart -->
+        <div style="margin-top: 25px; padding: 20px; background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div id="mermaidGraph" class="mermaid"></div>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
+    <!-- APPLICATION JAVASCRIPT -->
+    <!-- ================================================== -->
     <script src="script.js"></script>
 
 </body>
+
 </html>
